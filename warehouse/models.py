@@ -21,6 +21,20 @@ class Warehouse(models.Model):
     name = models.CharField(max_length=100)
     company = models.ForeignKey('Company', on_delete=models.CASCADE)
 
+    def insert_stock(self, product, quantity):
+        # kita cari dlu di gudang ini ada ga stock product nya
+        stock = Stock.objects.filter(product=product, warehouse=self)
+        # warehouse=self adalah referensi ke gudang nya itu sendiri
+        if stock.exists():
+            # jika stock ada kita tambahkan
+            stock.quantity += quantity
+            # lalu simpan di database
+            stock.save()
+        else:
+            # jika tidak ada maka kita buat stock nya
+            Stock.object.create(warehouse=self, product=product, quantity=quantity)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     company = models.ForeignKey('Company', on_delete=models.CASCADE)
