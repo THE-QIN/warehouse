@@ -19,7 +19,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "warehouse",
+    "tests"
+    "warehouse.apps.WarehouseConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

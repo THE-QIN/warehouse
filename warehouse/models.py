@@ -6,6 +6,9 @@
 # 6.database mencatat untuk mengetahui id karyawan yang membawa masuk atau keluar barang yang ada di gudang.
 # 7.mencatat kapan barang yang ada di gudang masuk dan kapan barang di gudang keluar.
 from django.db import models
+from .manager import UserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from helper.models import TimestampWithUid
 
 class Profile(models.Model):
     name = models.CharField(max_length=100)
@@ -38,3 +41,19 @@ class InventoryRecord(models.Model):
     warehouse = models.ForeignKey('Warehouse', on_delete=models.CASCADE)
     entry_type = models.CharField(max_length=50, choices=[('in', 'IN'), ('out', 'OUT')])
     entry_date = models.DateTimeField(auto_now_add=True)
+
+class User(AbstractBaseUser, TimestampWithUid, PermissionsMixin):
+    id = TimestampWithUid.uid
+    email = models.EmailField(("email address"), unique=True)
+    username = models.CharField(max_length=255, unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    USERNAME_FIELD = "username"
+    AUTH_FIELD_NAME = "email"
+    REQUIRED_FIELDS = ["email"]
+
+    objects = UserManager()
+
+    def __str__(self) -> str:
+        return self.email
